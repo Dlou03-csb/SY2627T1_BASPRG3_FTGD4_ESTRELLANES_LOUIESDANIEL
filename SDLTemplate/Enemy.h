@@ -19,10 +19,6 @@ public:
     void draw() override;
 
 private:
-    int x;
-    int y;
-    int height;
-    int width;
 
     SDL_Texture* texture;
     Mix_Chunk* sound;

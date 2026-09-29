@@ -27,3 +27,23 @@ void GameObject::update()
 void GameObject::draw()
 {
 }
+
+int GameObject::GetX()
+{
+	return x;
+}
+
+int GameObject::GetY()
+{
+	return y;
+}
+
+int GameObject::GetWidth()
+{
+	return width;
+}
+
+int GameObject::GetHeight()
+{
+	return height;
+}

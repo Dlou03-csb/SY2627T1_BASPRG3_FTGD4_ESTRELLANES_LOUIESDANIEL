@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include <vector>
+#include "text.h"
 
 class GameScene : public Scene
 {
@@ -17,9 +18,14 @@ public:
 
 private:
 	void spawnEnemy(int count);
+	void DeSpawnEnemy(Enemy* enemy);
+
+	void DoSpawnLogic();
+	void DoCollisionLogic();
 
 	Player* player;
 
+	int points;
 	float currentSpawnTime;
 	float spawnTime;
 

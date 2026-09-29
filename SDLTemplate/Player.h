@@ -13,14 +13,12 @@ public:
 	void start() override;
 	void update() override;
 	void draw() override;
-	int GetX();
-	int GetY();
+	void DoDeath();
+	bool GetIsAlive();
+
 
 private:
-	int x;
-	int y;
-	int width;
-	int height;
+
 	SDL_Texture* texture;
 	int speed;
 
@@ -33,6 +31,8 @@ private:
 	float currentReloadTime;
 	float wingRT;
 	float currentWingRT;
+
+	bool isAlive;
 
 	std::vector<Bullet*> bullets;
 };

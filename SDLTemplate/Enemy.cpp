@@ -21,6 +21,7 @@ void Enemy::start()
 {
 	texture = loadTexture("gfx/enemy.png");
 	sound = SoundManager::loadSound("sound/enemyShot.ogg");
+	sound->volume = 64;
 
 	width = 0;
 	height = 0;
@@ -63,6 +64,11 @@ void Enemy::update()
 		currentDirectionChangeTime = directionChangeTime;
 	}
 
+	if (y < 0 || y > SCREEN_HEIGHT - height)
+	{
+		directionY = -directionY;
+	}
+
 	x += directionX * speed;
 	y += directionY * speed;
 
@@ -77,17 +83,18 @@ void Enemy::update()
 		float bulletDirectionY;
 
 		calcSlope(
-			targetPlayer->GetX(), targetPlayer->GetY(), x, y, &bulletDirectionX, &bulletDirectionY
+			targetPlayer->GameObject::GetX(), targetPlayer->GameObject::GetY(), x, y, &bulletDirectionX, &bulletDirectionY
 		);
 
 		SoundManager::playSound(sound);
 		Bullet* bullet = new Bullet
 		(
-			x, 
-			y + (height / 2) - 5, 
-			bulletDirectionX, 
-			bulletDirectionY, 
-			5
+			x,
+			y + (height / 2) - 5,
+			bulletDirectionX,
+			bulletDirectionY,
+			5,
+			Side::ENEMY_SIDE
 		);
 
 		getScene()->addGameObject(bullet);

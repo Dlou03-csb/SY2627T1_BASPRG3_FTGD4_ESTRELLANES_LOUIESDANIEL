@@ -15,8 +15,9 @@ void Player::start()
 {
 	// Load texture
 	// This only supports jpeg, png, and bitmaps
-	texture = loadTexture("gfx/player.png");
-	sound = SoundManager::loadSound("sound/shoot.ogg");
+	texture = loadTexture("gfx/KING.png");
+	sound = SoundManager::loadSound("sound/gilgameshlaugh.mp3");
+	sound->volume = 64;
 
 	// Initialize Variables
 	x = 100;
@@ -26,6 +27,8 @@ void Player::start()
 	speed = 1;
 	speedBoost = 5;
 	defaultSpeed = 1;
+
+	isAlive = true;
 
 	reloadTime = 8; // 0.16sec (8/60)
 	currentReloadTime = 0;
@@ -50,10 +53,16 @@ void Player::update()
 		}
 	}
 
+	if (!isAlive)
+	{
+		return;
+	}
+
 	if (currentReloadTime > 0)
 	{
 		currentReloadTime--;
 	}
+
 
 	if (app.keyboard[SDL_SCANCODE_F] && currentReloadTime <= 0)
 	{
@@ -64,7 +73,8 @@ void Player::update()
 			y + (height / 2) - 5,
 			1,
 			0,
-			5
+			5,
+			Side::PLAYER_SIDE
 		);
 		getScene()->addGameObject(bullet);
 		bullets.push_back(bullet);
@@ -81,7 +91,8 @@ void Player::update()
 			y + (height / 2) - 27,
 			1,
 			0,
-			5
+			5,
+			Side::PLAYER_SIDE
 		);
 		getScene()->addGameObject(bullet);
 		bullets.push_back(bullet);
@@ -95,7 +106,8 @@ void Player::update()
 			y + (height / 2) - -22,
 			1,
 			0,
-			5
+			5,
+			Side::PLAYER_SIDE
 		);
 		getScene()->addGameObject(bullet2);
 		bullets.push_back(bullet2);
@@ -143,17 +155,19 @@ void Player::update()
 
 void Player::draw()
 {
-
-	blit(texture, x, y);
+	if (isAlive)
+	{
+		blit(texture, x, y);
+	}
 
 }
 
-int Player::GetX()
+void Player::DoDeath()
 {
-	return x;
+	isAlive = false;
 }
 
-int Player::GetY()
+bool Player::GetIsAlive()
 {
-	return y;
+	return isAlive;
 }

@@ -20,6 +20,9 @@ void GameScene::start()
 	Scene::start();
 	// Initialize any scene logic here
 
+	initFonts();
+	points = 0;
+
 	spawnTime = 120;
 	currentSpawnTime = spawnTime;
 
@@ -28,11 +31,39 @@ void GameScene::start()
 void GameScene::draw()
 {
 	Scene::draw();
+
+	drawText
+	(
+		110, 20,
+		255, 255, 255,
+		TEXT_CENTER,
+		"POINTS: %03d" , points
+	);
+
+	if (!player->GetIsAlive())
+	{
+		drawText
+		(
+			SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
+			255, 255, 255,
+			TEXT_CENTER,
+			"GAME OVER"
+		);
+	}
 }
 
 void GameScene::update()
 {
 	Scene::update();
+
+	DoSpawnLogic();
+	DoCollisionLogic();
+
+}
+
+
+void GameScene::DoSpawnLogic()
+{
 
 	if (currentSpawnTime > 0)
 	{
@@ -46,6 +77,58 @@ void GameScene::update()
 
 }
 
+void GameScene::DoCollisionLogic()
+{
+
+	for (int i = 0; i < objects.size(); i++)
+	{
+		Bullet* bullet = dynamic_cast<Bullet*>(objects[i]);
+		if (bullet != NULL)
+		{
+			if (bullet->GetSide() == Side::ENEMY_SIDE)
+			{
+				int collision = checkCollision
+				(
+					bullet->GetX(), bullet->GetY(), bullet->GetWidth(), bullet->GetHeight(),
+					player->GetX(), player->GetY(), player->GetWidth(), player->GetHeight()
+
+				);
+
+				if (collision == 1)
+				{
+					std::cout << "Damn you!" << std::endl;
+					player->DoDeath();
+					break;
+				}
+			}
+			else if (bullet->GetSide() == Side:: PLAYER_SIDE)
+			{
+				for (int i = 0; i < enemies.size(); i++)
+				{
+					Enemy* enemy = enemies[i];
+
+					int collision = checkCollision
+					(
+						bullet->GetX(), bullet->GetY(), bullet->GetWidth(), bullet->GetHeight(),
+						enemy->GetX(), enemy->GetY(), enemy->GetWidth(), enemy->GetHeight()
+
+					);
+
+					if (collision == 1)
+					{
+						std::cout << "Mongrel Hit" << std::endl;
+						DeSpawnEnemy(enemy);
+						points++;
+						break;
+					}
+
+				}
+			}
+		}
+	}
+
+}
+
 void GameScene::spawnEnemy(int count)
 {
 	for (int i = 0; i < count; i++)
@@ -54,5 +137,26 @@ void GameScene::spawnEnemy(int count)
 		this->addGameObject(enemy);
 		enemies.push_back(enemy);
 	}
+
+}
+
+void GameScene::DeSpawnEnemy(Enemy* enemy)
+{
+	int index = -1;
+	for (int i = 0; i < enemies.size(); i++)
+	{
+		if (enemy == enemies[i])
+		{
+			index = i;
+			break;
+		}
+	}
+
+	if (index >= 0)
+	{
+		enemies.erase(enemies.begin() + index);
+		delete enemy;
+	}
+
 
 }
