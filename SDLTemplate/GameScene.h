@@ -31,5 +31,7 @@ private:
 
 	std::vector<Enemy*> enemies;
 
+	SDL_Texture* background;
+
 };
 

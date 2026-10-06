@@ -20,6 +20,8 @@ void GameScene::start()
 	Scene::start();
 	// Initialize any scene logic here
 
+	background = loadTexture("gfx/background.png");
+
 	initFonts();
 	points = 0;
 
@@ -30,6 +32,11 @@ void GameScene::start()
 
 void GameScene::draw()
 {
+	int bgWidth;
+	int bgHeight;
+
+	blitScale(background, 0, 0, &bgWidth, &bgHeight, 3);
+
 	Scene::draw();
 
 	drawText
@@ -58,6 +65,15 @@ void GameScene::update()
 
 	DoSpawnLogic();
 	DoCollisionLogic();
+
+	for (int i = enemies.size() - 1; i >= 0; i--)
+	{
+		if (enemies[i]->isExploding && enemies[i]->explodeTime <= 0)
+		{
+			DeSpawnEnemy(enemies[i]);
+		}
+
+	}
 
 }
 
@@ -107,6 +123,8 @@ void GameScene::DoCollisionLogic()
 				{
 					Enemy* enemy = enemies[i];
 
+					if (enemy->isExploding) continue;
+
 					int collision = checkCollision
 					(
 						bullet->GetX(), bullet->GetY(), bullet->GetWidth(), bullet->GetHeight(),
@@ -117,7 +135,7 @@ void GameScene::DoCollisionLogic()
 					if (collision == 1)
 					{
 						std::cout << "Mongrel Hit" << std::endl;
-						DeSpawnEnemy(enemy);
+						enemy->explode();
 						points++;
 						break;
 					}

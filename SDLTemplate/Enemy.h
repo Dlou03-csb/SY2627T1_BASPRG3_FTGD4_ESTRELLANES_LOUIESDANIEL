@@ -17,6 +17,11 @@ public:
     void start() override;
     void update() override;
     void draw() override;
+    void explode();
+
+    int explodeTime;
+    bool isExploding;
+    SDL_Texture* explosion;
 
 private:
 

@@ -35,11 +35,22 @@ void Enemy::start()
 	reloadTime = 60;
 	currentReloadTime = 0;
 
+	isExploding = false;
+	explodeTime = 20;
+	explosion = loadTexture("gfx/explosion.png");
+
 	SDL_QueryTexture(texture, NULL, NULL, &width, &height);
 }
 
 void Enemy::update()
 {
+
+	if (isExploding == true)
+	{
+		explodeTime--;
+		return;
+	}
+
 
 	for (int i = 0; i < bullets.size(); i++)
 	{
@@ -104,8 +115,23 @@ void Enemy::update()
 	}
 }
 
+void Enemy::explode()
+{
+	isExploding = true;
+}
+
 void Enemy::draw()
 {
-	blit(texture, x, y);
+	if (isExploding == true)
+	{
+		blit(explosion, x, y);
+	}
+	else
+	{
+		blit(texture, x, y);
+	}
+
 }
+
+
 
