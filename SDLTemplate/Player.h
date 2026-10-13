@@ -14,7 +14,10 @@ public:
 	void update() override;
 	void draw() override;
 	void DoDeath();
+	void upgrade();
 	bool GetIsAlive();
+
+	int level;
 
 
 private:
@@ -26,6 +29,8 @@ private:
 
 	int speedBoost;
 	int defaultSpeed;
+	int powerUpTimer;
+	int maxPowerUpTime;
 
 	float reloadTime;
 	float currentReloadTime;

@@ -4,8 +4,8 @@
 Enemy::Enemy(Player* player)
 {
 	targetPlayer = player;
-	x = SCREEN_WIDTH + (rand() % 200);
-	y = rand() % SCREEN_HEIGHT;
+	x = rand() % (SCREEN_WIDTH - 50);
+	y = -50;
 
 }
 
@@ -27,7 +27,7 @@ void Enemy::start()
 	height = 0;
 
 	speed = 2;
-	directionX = -1;
+	directionX = 1;
 	directionY = 1;
 	directionChangeTime = 120;
 	currentDirectionChangeTime = directionChangeTime;
@@ -54,7 +54,7 @@ void Enemy::update()
 
 	for (int i = 0; i < bullets.size(); i++)
 	{
-		if (bullets[i]->GetX() < 0)
+		if (bullets[i]->GetY() > SCREEN_HEIGHT)
 		{
 			Bullet* bulletToDelete = bullets[i];
 			bullets.erase(bullets.begin() + i);
@@ -71,13 +71,13 @@ void Enemy::update()
 	}
 	else
 	{
-		directionY = -directionY;
+		directionX = -directionX;
 		currentDirectionChangeTime = directionChangeTime;
 	}
 
-	if (y < 0 || y > SCREEN_HEIGHT - height)
+	if (x < 0 || x > SCREEN_WIDTH - height)
 	{
-		directionY = -directionY;
+		directionX = -directionX;
 	}
 
 	x += directionX * speed;

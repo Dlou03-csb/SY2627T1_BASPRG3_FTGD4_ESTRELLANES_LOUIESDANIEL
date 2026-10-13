@@ -20,8 +20,8 @@ void Player::start()
 	sound->volume = 64;
 
 	// Initialize Variables
-	x = 100;
-	y = 100;
+	x = (SCREEN_WIDTH / 2) - (width / 2) - 40;
+	y = SCREEN_HEIGHT - 100;
 	width = 0;
 	height = 0;
 	speed = 1;
@@ -37,13 +37,17 @@ void Player::start()
 
 	// Query the texture to set our width and height
 	SDL_QueryTexture(texture, NULL, NULL, &width, &height);
+
+	level = 1;
+	powerUpTimer = 0;
+	maxPowerUpTime = 400;
 }
 
 void Player::update()
 {
 	for (int i = 0; i < bullets.size(); i++)
 	{
-		if (bullets[i]->GetX() > SCREEN_WIDTH)
+		if (bullets[i]->GetY() < 0)
 		{
 			Bullet* bulletToDelete = bullets[i];
 			bullets.erase(bullets.begin() + i);
@@ -52,6 +56,27 @@ void Player::update()
 			break;
 		}
 	}
+
+	if (level > 1)
+	{
+
+		if (powerUpTimer > 0)
+		{
+			powerUpTimer--;
+		}
+		else
+		{
+			level--;
+
+			if (level > 1)
+			{
+				powerUpTimer = maxPowerUpTime;
+			}
+
+		}
+
+	}
+
 
 	if (!isAlive)
 	{
@@ -69,15 +94,46 @@ void Player::update()
 		SoundManager::playSound(sound);
 		Bullet* bullet = new Bullet
 		(
-			x + width - 5,
-			y + (height / 2) - 5,
-			1,
+			x + (width / 2) - 15,
+			y + height - 100,
 			0,
+			-1,
 			5,
-			Side::PLAYER_SIDE
+			Side::PLAYER_SIDE,
+			1
 		);
 		getScene()->addGameObject(bullet);
 		bullets.push_back(bullet);
+
+		if (level >= 2)
+		{
+			Bullet* bullet2 = new Bullet
+			(
+				x + (width / 2) - 40,
+				y + height - 100,
+				0,
+				-1,
+				5,
+				Side::PLAYER_SIDE,
+				3
+			);
+			getScene()->addGameObject(bullet2);
+			bullets.push_back(bullet2);
+
+			Bullet* bullet3 = new Bullet
+			(
+				x + (width / 2) + 10,
+				y + height - 100,
+				0,
+				-1,
+				5,
+				Side::PLAYER_SIDE,
+				4
+			);
+			getScene()->addGameObject(bullet3);
+			bullets.push_back(bullet3);
+
+		}
 
 		currentReloadTime = reloadTime;
 	}
@@ -85,32 +141,33 @@ void Player::update()
 	if (app.keyboard[SDL_SCANCODE_G] && currentWingRT <= 0)
 	{
 		SoundManager::playSound(sound);
-		Bullet* bullet = new Bullet
+		Bullet* leftBullet = new Bullet
 		(
-			x + width - 3,
-			y + (height / 2) - 27,
-			1,
+			x + (width / 2) - 70,
+			y + height - 70,
 			0,
+			-1,
 			5,
-			Side::PLAYER_SIDE
+			Side::PLAYER_SIDE,
+			2
 		);
-		getScene()->addGameObject(bullet);
-		bullets.push_back(bullet);
+		getScene()->addGameObject(leftBullet);
+		bullets.push_back(leftBullet);
 
 		currentWingRT = wingRT;
 
-		SoundManager::playSound(sound);
-		Bullet* bullet2 = new Bullet
+		Bullet* rightBullet = new Bullet
 		(
-			x + width - 3,
-			y + (height / 2) - -22,
-			1,
+			x + (width / 2) + 50,
+			y + height - 70,
 			0,
+			-1,
 			5,
-			Side::PLAYER_SIDE
+			Side::PLAYER_SIDE,
+			2
 		);
-		getScene()->addGameObject(bullet2);
-		bullets.push_back(bullet2);
+		getScene()->addGameObject(rightBullet);
+		bullets.push_back(rightBullet);
 
 		currentWingRT = wingRT;
 
@@ -165,6 +222,17 @@ void Player::draw()
 void Player::DoDeath()
 {
 	isAlive = false;
+}
+
+void Player::upgrade()
+{
+
+	if (level < 3)
+	{
+		level++;
+	}
+	powerUpTimer = maxPowerUpTime;
+
 }
 
 bool Player::GetIsAlive()

@@ -12,7 +12,7 @@ enum class Side
 class Bullet : public GameObject
 {
 public:
-	Bullet(int positionX, int positionY, float directionX, float directionY, int speed, Side side);
+	Bullet(int positionX, int positionY, float directionX, float directionY, int speed, Side side, int bulletTexture = 0);
 	void start() override;
 	void update() override;
 	void draw() override;
@@ -21,8 +21,8 @@ public:
 private:
 
 	SDL_Texture* texture;
-	SDL_Texture* texture2;
 	int speed;
+	int bulletTexture;
 
 	float directionX;
 	float directionY;

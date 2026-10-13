@@ -1,5 +1,6 @@
 #include "GameScene.h"
 
+
 GameScene::GameScene()
 {
 	// Register and add game objects on constructor
@@ -27,6 +28,9 @@ void GameScene::start()
 
 	spawnTime = 120;
 	currentSpawnTime = spawnTime;
+
+	powerUpSpawnTime = 600;
+	currentPowerUpSpawnTime = powerUpSpawnTime;
 
 }
 
@@ -75,6 +79,34 @@ void GameScene::update()
 
 	}
 
+	for (int i = powerups.size() - 1; i >= 0; i--)
+	{
+		powerUP* powerUp = powerups[i];
+
+		int coll = checkCollision
+		(
+			powerUp->GetX(), powerUp->GetY(), powerUp->GetWidth(), powerUp->GetHeight(),
+			player->GetX(), player->GetY(), player->GetWidth(), player->GetHeight()
+
+		);
+
+		if (coll == 1)
+		{
+			player->upgrade();
+			powerups.erase(powerups.begin() + i);
+			delete powerUp;
+			continue;
+
+		}
+
+		if (powerUp->GetY() > SCREEN_HEIGHT)
+		{
+			powerups.erase(powerups.begin() + i);
+			delete powerUp;
+		}
+
+	}
+
 }
 
 
@@ -89,6 +121,18 @@ void GameScene::DoSpawnLogic()
 	{
 		spawnEnemy(2);
 		currentSpawnTime = spawnTime;
+	}
+
+	if (currentPowerUpSpawnTime > 0)
+	{
+		currentPowerUpSpawnTime--;
+	}
+	else
+	{
+		powerUP* powerUp = new powerUP(rand() % (SCREEN_WIDTH - 50), -50);
+		this->addGameObject(powerUp);
+		powerups.push_back(powerUp);
+		currentPowerUpSpawnTime = powerUpSpawnTime;
 	}
 
 }
