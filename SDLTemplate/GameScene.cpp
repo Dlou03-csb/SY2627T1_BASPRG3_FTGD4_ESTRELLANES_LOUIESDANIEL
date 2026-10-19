@@ -268,5 +268,4 @@ void GameScene::DeSpawnEnemy(Enemy* enemy)
 		delete enemy;
 	}
 
-
 }
