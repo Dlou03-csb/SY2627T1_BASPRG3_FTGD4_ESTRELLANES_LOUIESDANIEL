@@ -235,6 +235,21 @@ void Player::upgrade()
 
 }
 
+void Player::deleteBullet(Bullet* bulletToDelete)
+{
+
+	for (int i = 0; i < bullets.size(); i++)
+	{
+		if (bullets[i] == bulletToDelete)
+		{
+			bullets.erase(bullets.begin() + i);
+			delete bulletToDelete;
+			break;
+		}
+	}
+
+}
+
 bool Player::GetIsAlive()
 {
 	return isAlive;

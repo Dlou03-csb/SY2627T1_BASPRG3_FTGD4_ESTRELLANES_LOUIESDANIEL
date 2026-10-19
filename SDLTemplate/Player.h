@@ -15,6 +15,7 @@ public:
 	void draw() override;
 	void DoDeath();
 	void upgrade();
+	void deleteBullet(Bullet* bulletToDelete);
 	bool GetIsAlive();
 
 	int level;

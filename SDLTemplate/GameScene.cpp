@@ -25,6 +25,10 @@ void GameScene::start()
 
 	initFonts();
 	points = 0;
+	bossPointSpawn = 10;
+
+	isBossFight = false;
+	boss = nullptr;
 
 	spawnTime = 120;
 	currentSpawnTime = spawnTime;
@@ -79,6 +83,15 @@ void GameScene::update()
 
 	}
 
+	if (isBossFight && boss != nullptr && boss->isDead())
+	{
+		points += 5;
+		delete boss;
+		boss = nullptr;
+		isBossFight = false;
+		bossPointSpawn += 15;
+	}
+
 	for (int i = powerups.size() - 1; i >= 0; i--)
 	{
 		powerUP* powerUp = powerups[i];
@@ -113,14 +126,28 @@ void GameScene::update()
 void GameScene::DoSpawnLogic()
 {
 
-	if (currentSpawnTime > 0)
+	if (!isBossFight && points >= bossPointSpawn)
 	{
-		currentSpawnTime--;
+
+		isBossFight = true;
+		boss = new Boss(player);
+		this->addGameObject(boss);
+
 	}
-	else
+
+	if (!isBossFight)
 	{
-		spawnEnemy(2);
-		currentSpawnTime = spawnTime;
+
+		if (currentSpawnTime > 0)
+		{
+			currentSpawnTime--;
+		}
+		else
+		{
+			spawnEnemy(2);
+			currentSpawnTime = spawnTime;
+		}
+
 	}
 
 	if (currentPowerUpSpawnTime > 0)
@@ -163,6 +190,27 @@ void GameScene::DoCollisionLogic()
 			}
 			else if (bullet->GetSide() == Side:: PLAYER_SIDE)
 			{
+
+				if (isBossFight && boss != nullptr && !boss->isExploding)
+				{
+					{
+						int collision = checkCollision
+						(
+							bullet->GetX(), bullet->GetY(), bullet->GetWidth(), bullet->GetHeight(),
+							boss->GetX(), boss->GetY(), boss->GetWidth(), boss->GetHeight()
+						);
+
+						if (collision == 1)
+						{
+							boss->takeDamage();
+							player->deleteBullet(bullet);
+							continue;
+						}
+
+					}
+				}
+
+
 				for (int i = 0; i < enemies.size(); i++)
 				{
 					Enemy* enemy = enemies[i];

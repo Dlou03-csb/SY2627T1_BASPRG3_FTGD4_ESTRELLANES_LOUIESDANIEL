@@ -6,6 +6,7 @@
 #include <vector>
 #include "text.h"
 #include "powerUP.h"
+#include "Boss.h"
 
 class GameScene : public Scene
 {
@@ -25,12 +26,16 @@ private:
 	void DoCollisionLogic();
 
 	Player* player;
+	Boss* boss;
 
 	int points;
+	int bossPointSpawn;
 	float currentSpawnTime;
 	float spawnTime;
 	float powerUpSpawnTime;
 	float currentPowerUpSpawnTime;
+
+	bool isBossFight;
 
 	std::vector<Enemy*> enemies;
 	std::vector<powerUP*> powerups;
